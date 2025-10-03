@@ -3,13 +3,6 @@ pipeline {
     environment {
         DOCKER_IMAGE = "houssem128/devops-project:latest"
     }
-    stages {
-        stage("Checkout") {
-            steps {
-                git branch: "main", url: "https://github.com/Houssem123987/devops-project.git"
-            }
-        }
-
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
