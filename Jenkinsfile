@@ -1,19 +1,24 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = "houssem128/devops-project:latest"
+        REPO_URL = 'https://github.com/Houssem123987/devops-project.git'
+        BRANCH = 'main'
     }
     stages {
-        stage('Checkout') {
+        stage('Prepare Workspace') {
             steps {
-                checkout scm
-            }
-        }
-
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    bat 'sonar-scanner'
+                script {
+                    // 1️⃣ Supprime complètement le workspace pour repartir propre
+                    deleteDir()
+                    
+                    // 2️⃣ Clone le repo directement dans le workspace Jenkins
+                    sh "git clone ${REPO_URL} ."
+                    
+                    // 3️⃣ Passe à la branche désirée
+                    sh "git checkout ${BRANCH}"
+                    
+                    // 4️⃣ Vérifie que Git fonctionne
+                    sh "git status"
                 }
             }
         }
