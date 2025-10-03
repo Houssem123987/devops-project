@@ -12,11 +12,11 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                docker.image('sonarsource/sonar-scanner-cli:latest').inside {
+                withSonarQubeEnv('Sonarqube') {
                     sh 'sonar-scanner'
+                }
+            }
         }
-    }
-}
 
 
         stage("Build Docker Image") {
