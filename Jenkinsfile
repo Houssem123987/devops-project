@@ -13,14 +13,14 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    bat 'sonar-scanner'
+                    sh 'sonar-scanner'
                 }
             }
         }
 
         stage("Build Docker Image") {
             steps {
-                bat "docker build -t %DOCKER_IMAGE% ."
+                sh "docker build -t %DOCKER_IMAGE% ."
             }
         }
 
@@ -31,8 +31,8 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
-                    bat 'echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin'
-                    bat 'docker push %DOCKER_IMAGE%'
+                    sh 'echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin'
+                    sh 'docker push %DOCKER_IMAGE%'
                 }
             }
         }
