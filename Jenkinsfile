@@ -1,6 +1,7 @@
 pipeline {
     agent any
     environment {
+        PATH = "/opt/sonar-scanner/bin:${env.PATH}"
         DOCKER_IMAGE = "houssem128/devops-project:latest"
     }
     stages {
