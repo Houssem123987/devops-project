@@ -1,31 +1,19 @@
 pipeline {
     agent any
     environment {
-        REPO_URL = 'https://github.com/Houssem123987/devops-project.git'
-        BRANCH = 'main'
+        DOCKER_IMAGE = "houssem128/devops-project:latest"
     }
+
     stages {
-        stage('Prepare Workspace') {
+        stage("Checkout") {
             steps {
-                script {
-                    // 1️⃣ Supprime complètement le workspace pour repartir propre
-                    deleteDir()
-                    
-                    // 2️⃣ Clone le repo directement dans le workspace Jenkins
-                    sh "git clone ${REPO_URL} ."
-                    
-                    // 3️⃣ Passe à la branche désirée
-                    sh "git checkout ${BRANCH}"
-                    
-                    // 4️⃣ Vérifie que Git fonctionne
-                    sh "git status"
-                }
+                git branch: "main", url: "https://github.com/Houssem123987/devops-project.git"
             }
         }
 
-        stage("Build Docker Image") {
+        stage("Build Image") {
             steps {
-                bat "docker build -t %DOCKER_IMAGE% ."
+                sh "docker build -t $DOCKER_IMAGE ."
             }
         }
 
@@ -36,8 +24,8 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
-                    bat 'echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin'
-                    bat 'docker push %DOCKER_IMAGE%'
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                    sh 'docker push $DOCKER_IMAGE'
                 }
             }
         }
