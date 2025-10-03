@@ -3,7 +3,6 @@ pipeline {
     environment {
         DOCKER_IMAGE = "houssem128/devops-project:latest"
     }
-
     stages {
         stage("Checkout") {
             steps {
@@ -11,7 +10,15 @@ pipeline {
             }
         }
 
-        stage("Build Image") {
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('Sonarqube') {
+                    sh 'sonar-scanner'
+                }
+            }
+        }
+
+        stage("Build Docker Image") {
             steps {
                 sh "docker build -t $DOCKER_IMAGE ."
             }
