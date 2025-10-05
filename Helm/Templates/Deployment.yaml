@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deployment
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: flask-app
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: {{ .Values.service.port }}
+        resources:
+          requests:
+            cpu: {{ .Values.resources.requests.cpu }}
+            memory: {{ .Values.resources.requests.memory }}
+          limits:
+            cpu: {{ .Values.resources.limits.cpu }}
+            memory: {{ .Values.resources.limits.memory }}
+        envFrom:
+        - configMapRef:
+            name: {{ .Release.Name }}-config
+        env:
+        - name: APP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: password
+        volumeMounts:
+        - name: flask-storage
+          mountPath: /app/data
+        - name: config-volume
+          mountPath: /app/config
+        - name: secret-volume
+          mountPath: /app/secrets
+      volumes:
+      - name: flask-storage
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-pvc
+      - name: config-volume
+        configMap:
+          name: {{ .Release.Name }}-config
+      - name: secret-volume
+        secret:
+          secretName: {{ .Release.Name }}-secret

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  namespace: {{ .Values.namespace }}
+data:
+  MAX_CONNECTIONS: "{{ .Values.config.MAX_CONNECTIONS }}"
+  DEBUG: "{{ .Values.config.DEBUG }}"

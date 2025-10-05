@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: {{ .Release.Name }}-quota
+  namespace: {{ .Values.namespace }}
+spec:
+  hard:
+    pods: "{{ .Values.quota.pods }}"
+    requests.cpu: "{{ .Values.quota.requestsCPU }}"
+    requests.memory: "{{ .Values.quota.requestsMemory }}"
+    limits.cpu: "{{ .Values.quota.limitsCPU }}"
+    limits.memory: "{{ .Values.quota.limitsMemory }}"

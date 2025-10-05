@@ -1,0 +1,46 @@
+namespace: devops-flask
+
+replicaCount: 3
+
+image:
+  repository: houssem128/flask-app
+  tag: latest
+
+resources:
+  requests:
+    cpu: "200m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "256Mi"
+
+pvc:
+  storage: 2Gi
+
+configMap:
+  MAX_CONNECTIONS: "10"
+  DEBUG: "false"
+
+secret:
+  password: SG91c3NlbWZraWhma2loMTIzNDU2IQ==
+
+service:
+  port: 5000
+  nodePort: 30007
+
+ingress:
+  enabled: true
+  host: flask-app.com
+
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 50
+
+quota:
+  pods: 10
+  requestsCPU: 2
+  requestsMemory: 4Gi
+  limitsCPU: 4
+  limitsMemory: 8Gi
