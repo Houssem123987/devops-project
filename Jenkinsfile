@@ -9,11 +9,6 @@ pipeline {
                 git branch: "main", url: "https://github.com/Houssem123987/devops-project.git"
             }
         }
-        stage("Build Image") {
-            steps {
-                sh "docker build -t $DOCKER_IMAGE ."
-            }
-        }    
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonarqube') {
@@ -21,7 +16,11 @@ pipeline {
                 }
             }
         }
-
+        stage("Build Image") {
+            steps {
+                sh "docker build -t $DOCKER_IMAGE ."
+            }
+        }    
         stage("Build Docker Image") {
             steps {
                 sh "docker build -t %DOCKER_IMAGE% ."
